@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduGames Hub</title>
+    <style>
+        :root {
+            --ft-bg: #0f0f1a;
+            --ft-card: #1a1a2e;
+            --ft-border: #2a2a4a;
+            --ft-border2: #3a3a5c;
+            --ft-text: #e0e0e0;
+            --ft-heading: #ffffff;
+            --ft-muted: #9ca3af;
+            --ft-accent: #4f46e5;
+            --ft-accent2: #6366f1;
+            --ft-accentHover: #4338ca;
+            --ft-tint: rgba(79, 70, 229, 0.1);
+            --ft-drawer: #16162c;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+        body { background: var(--ft-bg); color: var(--ft-text); min-height: 100vh; display: flex; flex-direction: column; }
+        
+        header { padding: 24px 20px; text-align: center; border-bottom: 1px solid var(--ft-border); background: var(--ft-card); position: relative; }
+        header h1 { font-size: 1.8rem; color: var(--ft-heading); margin-bottom: 6px; }
+        header p { color: var(--ft-muted); font-size: 0.95rem; }
+
+        .container { max-width: 800px; margin: 30px auto; padding: 0 20px; flex: 1; width: 100%; }
+        
+        .tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; justify-content: center; }
+        .tab { background: var(--ft-card); border: 1px solid var(--ft-border); color: var(--ft-text); padding: 10px 18px; border-radius: 8px; cursor: pointer; font-size: 0.9rem; font-weight: 500; transition: all 0.2s; }
+        .tab:hover { border-color: var(--ft-accent); background: var(--ft-tint); }
+        .tab.active { background: var(--ft-accent); color: #fff; border-color: var(--ft-accent); }
+
+        .panel { display: none; background: var(--ft-card); border: 1px solid var(--ft-border); border-radius: 12px; padding: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+        .panel.active { display: block; }
+
+        .controls { display: flex; flex-direction: column; gap: 16px; }
+        .control-row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+        
+        .btn { background: var(--ft-accent); color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+        .btn:hover { background: var(--ft-accentHover); }
+        .btn-secondary { background: transparent; border: 1px solid var(--ft-border2); color: var(--ft-text); }
+        .btn-secondary:hover { background: var(--ft-border); }
+
+        input[type="text"], select { background: var(--ft-bg); border: 1px solid var(--ft-border2); color: var(--ft-text); padding: 10px 14px; border-radius: 8px; outline: none; width: 100%; font-size: 0.95rem; }
+        input[type="text"]:focus, select:focus { border-color: var(--ft-accent); }
+
+        .result { margin-top: 20px; padding: 16px; background: var(--ft-bg); border: 1px solid var(--ft-border); border-radius: 8px; display: none; }
+        .result.show { display: block; }
+
+        .footer { text-align: center; padding: 24px; color: var(--ft-muted); font-size: 0.85rem; border-top: 1px solid var(--ft-border); margin-top: auto; }
+
+        /* Folder group styles injected by groups.js */
+        .folder-box { background: var(--ft-card); border: 1px solid var(--ft-border); border-radius: 10px; margin-bottom: 12px; overflow: hidden; }
+        .folder-header { padding: 12px 18px; background: var(--ft-border); cursor: pointer; font-weight: 600; display: flex; justify-content: space-between; align-items: center; }
+        .folder-content { padding: 12px; display: flex; gap: 8px; flex-wrap: wrap; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>🎮 EduGames Hub</h1>
+        <p>Interactive, private, and fully client-side learning games</p>
+    </header>
+
+    <div class="container">
+        <div class="tabs"></div>
+        <!-- Game panels will be injected here automatically -->
+        <div class="footer">EduGames Hub • Powered by Cloudflare Pages</div>
+    </div>
+
+    <!-- Game Scripts (Must be loaded BEFORE groups.js) -->
+    <script src="/games/trivia/trivia.js"></script>
+    <script src="/games/flashcards/flashcards.js"></script>
+
+    <!-- Add-ons -->
+    <script src="/settings/settings.js"></script>
+    <script src="/ui/groups.js"></script>
+</body>
+</html>
