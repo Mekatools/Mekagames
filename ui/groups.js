@@ -1,7 +1,7 @@
 (function(){
   try {
     var groups = {
-      "Quizzes": ["trivia"],
+      "Multiplayer & Quizzes": ["multi-trivia"],
       "Study Tools": ["flashcards"]
     };
 
@@ -10,7 +10,6 @@
 
     var allTabs = Array.from(tabsContainer.querySelectorAll('.tab'));
     
-    // Create folders
     Object.keys(groups).forEach(function(groupName) {
       var gameIds = groups[groupName];
       var matchedTabs = allTabs.filter(function(t) {
