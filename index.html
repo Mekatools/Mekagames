@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EduGames Hub</title>
+    <!-- PeerJS for free P2P multiplayer room codes -->
+    <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
     <style>
         :root {
             --ft-bg: #0f0f1a;
@@ -52,7 +54,6 @@
 
         .footer { text-align: center; padding: 24px; color: var(--ft-muted); font-size: 0.85rem; border-top: 1px solid var(--ft-border); margin-top: auto; }
 
-        /* Folder group styles injected by groups.js */
         .folder-box { background: var(--ft-card); border: 1px solid var(--ft-border); border-radius: 10px; margin-bottom: 12px; overflow: hidden; }
         .folder-header { padding: 12px 18px; background: var(--ft-border); cursor: pointer; font-weight: 600; display: flex; justify-content: space-between; align-items: center; }
         .folder-content { padding: 12px; display: flex; gap: 8px; flex-wrap: wrap; }
@@ -62,17 +63,16 @@
 
     <header>
         <h1>🎮 EduGames Hub</h1>
-        <p>Interactive, private, and fully client-side learning games</p>
+        <p>Interactive, private, and multiplayer learning games</p>
     </header>
 
     <div class="container">
         <div class="tabs"></div>
-        <!-- Game panels will be injected here automatically -->
         <div class="footer">EduGames Hub • Powered by Cloudflare Pages</div>
     </div>
 
-    <!-- Game Scripts (Must be loaded BEFORE groups.js) -->
-    <script src="/games/trivia/trivia.js"></script>
+    <!-- Game Scripts -->
+    <script src="/games/multiplayer-trivia/multiplayer-trivia.js"></script>
     <script src="/games/flashcards/flashcards.js"></script>
 
     <!-- Add-ons -->
