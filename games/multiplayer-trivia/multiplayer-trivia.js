@@ -12,13 +12,23 @@
     panel.innerHTML = `
       <div class="controls" id="mt-lobby">
         <h2 style="color:var(--ft-heading);">Live Multiplayer Trivia</h2>
-        <p style="color:var(--ft-muted); font-size:0.9rem;">Host a game to get a Room Code, or join your friends!</p>
+        <p style="color:var(--ft-muted); font-size:0.9rem;">Choose a theme, host a game, and invite your friends!</p>
         
-        <div style="display:flex; gap:10px; margin-top:10px;">
+        <div style="margin-top:10px;">
+          <label style="font-size:0.85rem; color:var(--ft-muted); display:block; margin-bottom:6px; font-weight:600;">Select Quiz Theme:</label>
+          <select id="mt-theme-select">
+            <option value="history">🏛️ History</option>
+            <option value="literature">📚 Literature</option>
+            <option value="science">🔬 Science & Nature</option>
+            <option value="popculture">🎬 Pop Culture</option>
+          </select>
+        </div>
+
+        <div style="display:flex; gap:10px; margin-top:12px;">
           <button class="btn" id="mt-host-btn">Host a Game</button>
         </div>
 
-        <div style="border-top:1px solid var(--ft-border2); padding-top:15px; margin-top:10px;">
+        <div style="border-top:1px solid var(--ft-border2); padding-top:15px; margin-top:15px;">
           <p style="margin-bottom:8px; font-weight:600;">Join an Existing Game:</p>
           <input type="text" id="mt-name-input" placeholder="Enter your nickname" style="margin-bottom:8px;">
           <input type="text" id="mt-code-input" placeholder="Enter 4-digit Room Code (e.g. 5821)" style="margin-bottom:8px;">
@@ -44,17 +54,36 @@
       tab.classList.add('active'); panel.classList.add('active');
     };
 
+    // Question banks categorized by theme
+    var questionBanks = {
+      history: [
+        { q: "Who was the first President of the United States?", options: ["Thomas Jefferson", "Abraham Lincoln", "George Washington", "John Adams"], correct: 2 },
+        { q: "In what year did World War II end?", options: ["1943", "1945", "1950", "1939"], correct: 1 },
+        { q: "The ancient city of Rome was built on how many hills?", options: ["5", "7", "10", "12"], correct: 1 }
+      ],
+      literature: [
+        { q: "Who wrote 'Romeo and Juliet'?", options: ["Charles Dickens", "Mark Twain", "William Shakespeare", "Jane Austen"], correct: 2 },
+        { q: "What is the name of the wizard school in Harry Potter?", options: ["Beauxbatons", "Durmstrang", "Hogwarts", "Ilvermorny"], correct: 2 },
+        { q: "In George Orwell's '1984', what is the ruling party's supreme figure?", options: ["Big Brother", "The Chancellor", "Leader X", "Chief Overseer"], correct: 0 }
+      ],
+      science: [
+        { q: "What chemical element is represented by the symbol 'Au'?", options: ["Silver", "Gold", "Copper", "Argon"], correct: 1 },
+        { q: "What is the powerhouse of the cell?", options: ["Nucleus", "Ribosome", "Mitochondria", "Endoplasmic Reticulum"], correct: 2 },
+        { q: "At what temperature do Celsius and Fahrenheit intersect?", options: ["-40", "0", "32", "100"], correct: 0 }
+      ],
+      popculture: [
+        { q: "Which movie features a theme song called 'My Heart Will Go On'?", options: ["The Notebook", "Titanic", "Avatar", "Armageddon"], correct: 1 },
+        { q: "What is the best-selling video game of all time as of recent years?", options: ["Grand Theft Auto V", "Tetris", "Minecraft", "Fortnite"], correct: 2 },
+        { q: "Who plays Iron Man in the Marvel Cinematic Universe?", options: ["Chris Evans", "Mark Ruffalo", "Robert Downey Jr.", "Chris Hemsworth"], correct: 2 }
+      ]
+    };
+
     // Game variables
     var peer = null, conn = null, isHost = false;
     var myName = "", roomCode = "";
     var currentQ = 0, score = 0;
+    var activeQuestions = [];
     
-    var questions = [
-      { q: "What is the capital of France?", options: ["Berlin", "Madrid", "Paris", "Rome"], correct: 2 },
-      { q: "Which planet is known as the Red Planet?", options: ["Venus", "Mars", "Jupiter", "Saturn"], correct: 1 },
-      { q: "What is 5 + 7 * 2?", options: ["24", "19", "17", "14"], correct: 1 }
-    ];
-
     var lobbyEl = panel.querySelector('#mt-lobby');
     var gameAreaEl = panel.querySelector('#mt-game-area');
     var statusBar = panel.querySelector('#mt-status-bar');
@@ -62,17 +91,19 @@
     var optBox = panel.querySelector('#mt-options');
     var resDiv = panel.querySelector('#result-' + ID);
 
-    // Host Game
+    // Host Game with Theme Selection
     panel.querySelector('#mt-host-btn').onclick = function() {
       isHost = true;
-      roomCode = Math.floor(1000 + Math.random() * 9000).toString(); // 4 digit code
+      var selectedTheme = panel.querySelector('#mt-theme-select').value;
+      activeQuestions = questionBanks[selectedTheme] || questionBanks.history;
       
+      roomCode = Math.floor(1000 + Math.random() * 9000).toString(); // 4 digit code
       peer = new Peer('edugames-' + roomCode);
       
       peer.on('open', function() {
         lobbyEl.style.display = 'none';
         gameAreaEl.style.display = 'flex';
-        statusBar.textContent = "Hosting Room Code: " + roomCode + " (Waiting for players...)";
+        statusBar.textContent = "Hosting Room: " + roomCode + " | Theme: " + selectedTheme.toUpperCase() + " (Waiting for players...)";
         
         peer.on('connection', function(connection) {
           conn = connection;
@@ -125,14 +156,14 @@
     }
 
     function showHostQuestion() {
-      if (currentQ >= questions.length) {
+      if (currentQ >= activeQuestions.length) {
         qBox.textContent = "Game Over! 🎉";
         optBox.innerHTML = "";
         statusBar.textContent = "Final Score: " + score;
         return;
       }
 
-      var q = questions[currentQ];
+      var q = activeQuestions[currentQ];
       qBox.textContent = "Q" + (currentQ + 1) + ": " + q.q;
       optBox.innerHTML = "";
 
@@ -166,7 +197,6 @@
           btn.className = 'btn btn-secondary';
           btn.textContent = opt;
           btn.onclick = function() {
-            // Answer selected
             optBox.innerHTML = "<p style='color:var(--ft-accent2);'>Answer submitted! Waiting for next question...</p>";
           };
           optBox.appendChild(btn);
